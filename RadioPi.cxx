@@ -384,7 +384,7 @@ int atan_lut_init(void)
 {
 	int i = 0;
 
-	atan_lut = malloc(atan_lut_size * sizeof(int));
+	atan_lut = (int *)malloc(atan_lut_size * sizeof(int));
 
 	for (i = 0; i < atan_lut_size; i++) {
 		atan_lut[i] = (int) (atan((double) i / (1<<atan_lut_coef)) / 3.14159 * (1<<14));
@@ -697,7 +697,7 @@ void full_demod(struct demod_state *d)
 static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx)
 {
 	int i;
-	struct dongle_state *s = ctx;
+	struct dongle_state *s = (dongle_state *)ctx;
 	struct demod_state *d = s->demod_target;
 
 	if (do_exit) {
@@ -722,14 +722,14 @@ static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx)
 
 static void *dongle_thread_fn(void *arg)
 {
-	struct dongle_state *s = arg;
+	struct dongle_state *s = (dongle_state *)arg;
 	rtlsdr_read_async(s->dev, rtlsdr_callback, s, 0, s->buf_len);
 	return 0;
 }
 
 static void *demod_thread_fn(void *arg)
 {
-	struct demod_state *d = arg;
+	struct demod_state *d = (demod_state *)arg;
 	struct output_state *o = d->output_target;
 	while (!do_exit) {
 		safe_cond_wait(&d->ready, &d->ready_m);
@@ -755,7 +755,7 @@ static void *demod_thread_fn(void *arg)
 
 static void *output_thread_fn(void *arg)
 {
-	struct output_state *s = arg;
+	struct output_state *s = (output_state *)arg;
 	while (!do_exit) {
 		// use timedwait and pad out under runs
 		safe_cond_wait(&s->ready, &s->ready_m);
@@ -796,7 +796,7 @@ static void optimal_settings(int freq, int rate)
 static void *controller_thread_fn(void *arg)
 {
 	int i;
-	struct controller_state *s = arg;
+	struct controller_state *s = (controller_state *)arg;
 
 	if (s->wb_mode)
 	{
@@ -1084,14 +1084,14 @@ int main( int argc, char *argv[])
 		demod.terminate_on_squelch = 0;
 
 	if (argc <= optind)
-		output.filename = "-";
+		output.filename = (char *)"-";
 	else
 		output.filename = argv[optind];
 
 	ACTUAL_BUF_LENGTH = lcm_post[demod.post_downsample] * DEFAULT_BUF_LENGTH;
 
 	if (!dev_given)
-		dongle.dev_index = verbose_device_search("0");
+		dongle.dev_index = verbose_device_search((char *)"0");
 
 	if (dongle.dev_index < 0)
 		exit(1);

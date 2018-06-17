@@ -6,7 +6,7 @@ set (RadioPi_VERSION_MINOR 1)
 
 add_executable( RadioPi
 	RadioPi.cxx
-	RtlSdrConvenience.cxx
+	rtlsdr/RtlSdrConvenience.cxx
 	)
 
 configure_file (
@@ -16,6 +16,7 @@ configure_file (
 
 include_directories(
 	"${PROJECT_BINARY_DIR}"
+	"${PROJECT_SOURCE_DIR}/rtlsdr/"
 	"/usr/include/libusb-1.0/"
 	)
 
