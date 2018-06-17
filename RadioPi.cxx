@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
@@ -10,7 +11,8 @@
 #include <libusb.h>
 
 #include "rtl-sdr.h"
-#include "convenience.h"
+#include "RtlSdrConvenience.hxx"
+#include "RadioPiConfig.h"
 
 #define DEFAULT_SAMPLE_RATE		24000
 #define DEFAULT_BUF_LENGTH		(1 * 16384)
@@ -950,8 +952,11 @@ void sanity_checks(void)
 
 }
 
-int main(int argc, char **argv)
+int main( int argc, char *argv[])
 {
+	std::cout << "RadioPi is alive!\n";
+	std::cout << "Version " << RadioPi_VERSION_MAJOR << "." << RadioPi_VERSION_MINOR << "\n";
+
 	struct sigaction sigact;
 	int r, opt;
 	int dev_given = 0;
@@ -1190,4 +1195,3 @@ int main(int argc, char **argv)
 	return r >= 0 ? r : -r;
 }
 
-// vim: tabstop=8:softtabstop=8:shiftwidth=8:noexpandtab

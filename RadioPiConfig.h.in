@@ -1,0 +1,4 @@
+// Configured options from CMake
+#define RadioPi_VERSION_MAJOR @RadioPi_VERSION_MAJOR@
+#define RadioPi_VERSION_MINOR @RadioPi_VERSION_MINOR@
+
